@@ -89,7 +89,7 @@ Criar um sistema unificado que transforme dados brutos de sensores em inteligên
 | **Frontend** | HTML5, CSS3, JavaScript ES6+ | Interface de usuário responsiva |
 | **Visualização** | Chart.js, Canvas API | Gráficos em tempo real |
 | **Comunicação** | WebSocket Simulado | Dados IoT em tempo real |
-| **Segurança** | JWT, Criptografia Simulada | Autenticação e proteção |
+| **Segurança** | JWT, AES-256, TLS 1.3 Simulado | Autenticação e proteção |
 | **AI/ML** | Algoritmos de Detecção de Anomalias | Manutenção preditiva |
 
 ---
@@ -322,3 +322,4 @@ Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para de
   </p>
   <p>📧 Contato: equipe@digitalfactory-bosch.com</p>
 </div>
+
