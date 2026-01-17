@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Factory - IoT Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+  <!-- Navigation Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <span class="logo"><i class="fas fa-industry"></i></span>
+        <span class="title">Digital Factory</span>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+    
+    <div class="sidebar-content">
+      <div class="user-profile">
+        <div class="avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-info">
+          <h3 id="sidebarUserName">Operador</h3>
+          <span class="user-role" id="sidebarUserRole">Operador</span>
+        </div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li class="active" data-page="dashboard">
+          <a href="#">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li data-page="devices">
+          <a href="#">
+            <i class="fas fa-microchip"></i>
+            <span>Dispositivos IoT</span>
+            <span class="badge">12</span>
+          </a>
+        </li>
+        <li data-page="analytics">
+          <a href="#">
+            <i class="fas fa-chart-bar"></i>
+            <span>Análises</span>
+          </a>
+        </li>
+        <li data-page="security">
+          <a href="#">
+            <i class="fas fa-shield-alt"></i>
+            <span>Cibersegurança</span>
+            <span class="badge warning">2</span>
+          </a>
+        </li>
+        <li data-page="predictive">
+          <a href="#">
+            <i class="fas fa-robot"></i>
+            <span>Manutenção Preditiva</span>
+          </a>
+        </li>
+        <li data-page="reports">
+          <a href="#">
+            <i class="fas fa-file-alt"></i>
+            <span>Relatórios</span>
+          </a>
+        </li>
+        <li data-page="settings">
+          <a href="#">
+            <i class="fas fa-cogs"></i>
+            <span>Configurações</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <div class="system-health">
+          <div class="health-indicator">
+            <div class="health-bar">
+              <div class="health-fill" style="width: 85%"></div>
+            </div>
+            <span>Saúde do Sistema: 85%</span>
+          </div>
+        </div>
+        <div class="connection-status">
+          <span class="status-dot connected"></span>
+          <span>Conectado</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content" id="mainContent">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="page-title">
+          <h1><i class="fas fa-tachometer-alt"></i> Dashboard IoT</h1>
+          <p class="page-subtitle">Monitoramento Industrial em Tempo Real</p>
+        </div>
+      </div>
+      
+      <div class="topbar-right">
+        <div class="quick-stats">
+          <div class="stat-item">
+            <i class="fas fa-clock"></i>
+            <span id="currentTime">--:--:--</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-database"></i>
+            <span>12.5 GB</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-bolt"></i>
+            <span id="powerConsumption">-- kW</span>
+          </div>
+        </div>
+        
+        <div class="user-section">
+          <button class="notification-btn" id="notificationBtn">
+            <i class="fas fa-bell"></i>
+            <span class="notification-count" id="notificationCount">3</span>
+          </button>
+          
+          <div class="user-info">
+            <div class="avatar-small">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="user-details">
+              <span id="userName">Carregando...</span>
+              <span class="user-role" id="userRole">Operador</span>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Status Bar -->
+    <section class="status-bar">
+      <div class="status-item">
+        <i class="fas fa-industry"></i>
+        <div>
+          <span class="label">Fábrica:</span>
+          <strong>Plant A - Linha 1</strong>
+        </div>
+      </div>
+      <div class="status-item">
+        <i class="fas fa-wifi"></i>
+        <div>
+          <span class="label">Dispositivos:</span>
+          <strong id="devicesOnline">12/12 Online</strong>
+        </div>
+      </div>
+      <div class="status-item">
+        <i class="fas fa-shield-alt"></i>
+        <div>
+          <span class="label">Segurança:</span>
+          <strong class="secure">ISO 27001</strong>
+        </div>
+      </div>
+      <div class="status-item">
+        <i class="fas fa-heartbeat"></i>
+        <div>
+          <span class="label">Saúde:</span>
+          <strong id="healthScore">--%</strong>
+        </div>
+      </div>
+      <div class="status-item">
+        <i class="fas fa-bolt"></i>
+        <div>
+          <span class="label">Uptime:</span>
+          <strong id="uptime">99.8%</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <main class="dashboard">
+      <!-- Cards de Métricas em Tempo Real -->
+      <div class="metrics-grid">
+        <div class="card animate__animated" id="tempCard">
+          <div class="card-header">
+            <h2><i class="fas fa-thermometer-half"></i> Temperatura</h2>
+            <div class="card-actions">
+              <button class="action-btn" data-action="details">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="metric-value" id="temp">-- °C</p>
+            <div class="metric-trend">
+              <span class="trend up"><i class="fas fa-arrow-up"></i> 2.1%</span>
+              <span class="metric-range">Alvo: 70-75°C</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="progress-bar">
+              <div class="progress-fill" id="tempProgress" style="width: 65%"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card animate__animated" id="vibrationCard">
+          <div class="card-header">
+            <h2><i class="fas fa-wave-square"></i> Vibração</h2>
+            <div class="card-actions">
+              <button class="action-btn" data-action="details">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="metric-value" id="vibration">--</p>
+            <div class="metric-trend">
+              <span class="trend down"><i class="fas fa-arrow-down"></i> 1.3%</span>
+              <span class="metric-range">Limite: < 0.06</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="progress-bar">
+              <div class="progress-fill" id="vibrationProgress" style="width: 45%"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card animate__animated" id="rpmCard">
+          <div class="card-header">
+            <h2><i class="fas fa-cogs"></i> RPM</h2>
+            <div class="card-actions">
+              <button class="action-btn" data-action="details">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="metric-value" id="rpm">--</p>
+            <div class="metric-trend">
+              <span class="trend stable"><i class="fas fa-minus"></i> 0.2%</span>
+              <span class="metric-range">Alvo: 1500 RPM</span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="progress-bar">
+              <div class="progress-fill" id="rpmProgress" style="width: 78%"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card status-card animate__animated" id="statusCard">
+          <div class="card-header">
+            <h2><i class="fas fa-heartbeat"></i> Status do Sistema</h2>
+            <div class="card-actions">
+              <button class="action-btn" data-action="refresh">
+                <i class="fas fa-sync"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="status-display">
+              <span class="status-dot" id="statusDot"></span>
+              <span class="status-text" id="statusText">Conectando...</span>
+            </div>
+            <div class="status-details">
+              <div class="detail-item">
+                <span class="label">Última Atualização:</span>
+                <span class="value" id="lastUpdate">--:--:--</span>
+              </div>
+              <div class="detail-item">
+                <span class="label">Latência:</span>
+                <span class="value" id="latency">-- ms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráficos e Visualizações -->
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header">
+            <h2><i class="fas fa-chart-line"></i> Temperatura em Tempo Real</h2>
+            <div class="chart-controls">
+              <button class="chart-btn active" data-range="1h">1H</button>
+              <button class="chart-btn" data-range="6h">6H</button>
+              <button class="chart-btn" data-range="24h">24H</button>
+            </div>
+          </div>
+          <canvas id="tempChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+          <div class="chart-header">
+            <h2><i class="fas fa-chart-area"></i> Análise de Vibração</h2>
+            <div class="chart-controls">
+              <button class="chart-btn" data-type="spectrum">Espectro</button>
+              <button class="chart-btn active" data-type="time">Tempo</button>
+            </div>
+          </div>
+          <canvas id="vibrationChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Segunda Linha de Gráficos -->
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-header">
+            <h2><i class="fas fa-chart-pie"></i> Distribuição de Energia</h2>
+            <div class="chart-controls">
+              <button class="chart-btn active" data-view="percentage">%</button>
+              <button class="chart-btn" data-view="kwh">kWh</button>
+            </div>
+          </div>
+          <canvas id="energyChart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+          <div class="chart-header">
+            <h2><i class="fas fa-network-wired"></i> Topologia de Rede</h2>
+            <div class="chart-controls">
+              <button class="chart-btn" data-layout="circular">Circular</button>
+              <button class="chart-btn active" data-layout="hierarchical">Hierárquico</button>
+            </div>
+          </div>
+          <canvas id="networkChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Alertas e Dispositivos -->
+      <div class="alerts-devices-grid">
+        <!-- Alertas do Sistema -->
+        <div class="alerts-section">
+          <div class="section-header">
+            <h2><i class="fas fa-exclamation-triangle"></i> Alertas do Sistema</h2>
+            <div class="header-actions">
+              <button class="action-btn" id="clearAlerts" title="Limpar alertas">
+                <i class="fas fa-trash"></i>
+              </button>
+              <span class="badge" id="alertCount">0</span>
+            </div>
+          </div>
+          <div class="alerts-container">
+            <div class="alerts-tabs">
+              <button class="tab-btn active" data-filter="all">Todos</button>
+              <button class="tab-btn" data-filter="critical">Críticos</button>
+              <button class="tab-btn" data-filter="warning">Avisos</button>
+            </div>
+            <ul class="alerts-list" id="alertList">
+              <li class="no-alerts">
+                <i class="fas fa-check-circle"></i>
+                <span>Nenhum alerta no momento</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Dispositivos Conectados -->
+        <div class="devices-section">
+          <div class="section-header">
+            <h2><i class="fas fa-microchip"></i> Dispositivos IoT</h2>
+            <div class="header-actions">
+              <button class="action-btn" id="refreshDevices" title="Atualizar dispositivos">
+                <i class="fas fa-sync"></i>
+              </button>
+              <span class="badge devices" id="devicesCount">12</span>
+            </div>
+          </div>
+          <div class="devices-container">
+            <div class="devices-list" id="deviceList">
+              <!-- Dispositivos serão carregados via JS -->
+            </div>
+            <div class="devices-summary">
+              <div class="summary-item">
+                <span class="label">Online:</span>
+                <span class="value online" id="devicesOnlineCount">12</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Offline:</span>
+                <span class="value offline" id="devicesOfflineCount">0</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Atenção:</span>
+                <span class="value warning" id="devicesWarningCount">2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Painel de Cibersegurança -->
+      <div class="security-panel">
+        <div class="section-header">
+          <h2><i class="fas fa-shield-alt"></i> Monitor de Segurança</h2>
+          <div class="security-score">
+            <div class="score-value">92</div>
+            <div class="score-label">Pontuação</div>
+          </div>
+        </div>
+        <div class="security-grid">
+          <div class="security-card secure">
+            <div class="security-icon">
+              <i class="fas fa-lock"></i>
+            </div>
+            <div class="security-info">
+              <h3>AES-256 Encryption</h3>
+              <p>Ativo</p>
+            </div>
+            <div class="security-status active"></div>
+          </div>
+          <div class="security-card warning">
+            <div class="security-icon">
+              <i class="fas fa-fire"></i>
+            </div>
+            <div class="security-info">
+              <h3>Firewall Rules</h3>
+              <p>24/32 Ativas</p>
+            </div>
+            <div class="security-status warning"></div>
+          </div>
+          <div class="security-card normal">
+            <div class="security-icon">
+              <i class="fas fa-eye"></i>
+            </div>
+            <div class="security-info">
+              <h3>Última Verificação</h3>
+              <p id="lastScan">15 min atrás</p>
+            </div>
+            <div class="security-status normal"></div>
+          </div>
+          <div class="security-card critical">
+            <div class="security-icon">
+              <i class="fas fa-bug"></i>
+            </div>
+            <div class="security-info">
+              <h3>Vulnerabilidades</h3>
+              <p>2 Críticas</p>
+            </div>
+            <div class="security-status critical"></div>
+          </div>
+        </div>
+        <div class="security-timeline">
+          <h3>Atividades Recentes</h3>
+          <div class="timeline">
+            <div class="timeline-item">
+              <span class="time">14:30</span>
+              <span class="event">Tentativa de acesso bloqueada</span>
+              <span class="severity critical">Crítico</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">14:15</span>
+              <span class="event">Varredura de rede concluída</span>
+              <span class="severity normal">Normal</span>
+            </div>
+            <div class="timeline-item">
+              <span class="time">13:45</span>
+              <span class="event">Atualização de firewall</span>
+              <span class="severity warning">Aviso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Análise Preditiva e Logs -->
+      <div class="predictive-logs-grid">
+        <!-- Análise Preditiva -->
+        <div class="predictive-section">
+          <div class="section-header">
+            <h2><i class="fas fa-robot"></i> Manutenção Preditiva (IA)</h2>
+            <div class="confidence-level">
+              <span class="confidence">92%</span>
+              <span class="confidence-label">Confiança</span>
+            </div>
+          </div>
+          <div class="prediction-card">
+            <div class="prediction-header">
+              <h3>Próxima Manutenção Estimada</h3>
+              <span class="prediction-time" id="nextMaintenance">48h</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-info">
+                <span>Progresso</span>
+                <span id="maintenanceProgressText">25%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="maintenanceProgress" style="width: 25%"></div>
+              </div>
+            </div>
+            <p class="prediction-desc">Baseado em análise de padrões históricos e machine learning</p>
+            <div class="prediction-details">
+              <div class="detail">
+                <span class="label"><i class="fas fa-exclamation-triangle"></i> Probabilidade de Falha:</span>
+                <span class="value" id="failureProbability">12%</span>
+              </div>
+              <div class="detail">
+                <span class="label"><i class="fas fa-dollar-sign"></i> Custo Estimado:</span>
+                <span class="value" id="maintenanceCost">R$ 2.500</span>
+              </div>
+              <div class="detail">
+                <span class="label"><i class="fas fa-calendar"></i> Data Sugerida:</span>
+                <span class="value" id="suggestedDate">15/10/2023</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Logs de Eventos -->
+        <div class="logs-section">
+          <div class="section-header">
+            <h2><i class="fas fa-history"></i> Logs de Eventos</h2>
+            <div class="header-actions">
+              <button class="action-btn" id="exportLogs" title="Exportar logs">
+                <i class="fas fa-download"></i>
+              </button>
+              <button class="action-btn" id="clearLogs" title="Limpar logs">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="logs-container">
+            <div class="logs-filters">
+              <div class="filter-group">
+                <label for="logLevel">Nível:</label>
+                <select id="logLevel">
+                  <option value="all">Todos</option>
+                  <option value="info">Info</option>
+                  <option value="warning">Warning</option>
+                  <option value="error">Error</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label for="logSource">Fonte:</label>
+                <select id="logSource">
+                  <option value="all">Todas</option>
+                  <option value="sensors">Sensores</option>
+                  <option value="security">Segurança</option>
+                  <option value="system">Sistema</option>
+                </select>
+              </div>
+            </div>
+            <div class="logs-list" id="logsList">
+              <!-- Logs serão carregados via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mapa de Dispositivos -->
+      <div class="map-section">
+        <div class="section-header">
+          <h2><i class="fas fa-map-marked-alt"></i> Mapa da Fábrica</h2>
+          <div class="header-actions">
+            <button class="action-btn" data-view="2d">2D</button>
+            <button class="action-btn active" data-view="3d">3D</button>
+            <button class="action-btn" data-view="heatmap">Heatmap</button>
+          </div>
+        </div>
+        <div class="map-container">
+          <div class="factory-map" id="factoryMap">
+            <!-- Mapa será renderizado via JS -->
+          </div>
+          <div class="map-legend">
+            <div class="legend-item">
+              <span class="legend-color normal"></span>
+              <span>Normal</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color warning"></span>
+              <span>Atenção</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color critical"></span>
+              <span>Crítico</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color offline"></span>
+              <span>Offline</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+      <div class="footer-content">
+        <div class="footer-info">
+          <span>© 2023 Digital Factory IoT Dashboard</span>
+          <span>v2.1.0</span>
+          <span>Última atualização: <span id="footerLastUpdate">--:--:--</span></span>
+        </div>
+        <div class="footer-stats">
+          <span><i class="fas fa-database"></i> Dados processados: <strong id="dataProcessed">1.2 TB</strong></span>
+          <span><i class="fas fa-server"></i> Servidor: <strong id="serverStatus">Online</strong></span>
+          <span><i class="fas fa-bolt"></i> Energia total: <strong id="totalPower">45.8 MW</strong></span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/charts.js"></script>
+</body>
+</html>
