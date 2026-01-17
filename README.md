@@ -205,9 +205,9 @@ npx serve .
 ```
 
 ### Entre no Site
-
-
-
+````
+Acesse: https://pulsefactory.netlify.app/
+````
 ### Credenciais de Teste
 
 | Role | Usuário | Senha |
@@ -322,4 +322,5 @@ Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para de
   </p>
   <p>📧 Contato: equipe@digitalfactory-bosch.com</p>
 </div>
+
 
