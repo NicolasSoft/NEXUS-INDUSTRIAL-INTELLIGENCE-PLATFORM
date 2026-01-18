@@ -316,11 +316,12 @@ Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para de
   <br>
   
   <p>
-    <sub>Última atualização: Dezembro 2023</sub> • 
+    <sub>Última atualização: 18/01/2026</sub> • 
     <sub>Versão: 2.1.0</sub> • 
     <sub>Status: Production Ready</sub>
   </p>
-  <p>📧 Contato: equipe@digitalfactory-bosch.com</p>
+  <p>Feito por Nicolas.</p>
 </div>
+
 
 
